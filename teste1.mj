@@ -18,4 +18,29 @@ class b
 class c
 {
 
+	int x, y, z;
+	A b, c, d;
+	
+	int metodo( int x, int y )
+	{
+		int x;
+		
+		super (+a, +b);
+		print +a + -b;
+		read a [+a - -b];		
+		return +a - -b;
+		for( i = +b ; +i < -5 ; i = +1 )
+		{
+			if( +b > -b )
+			{
+				A a;
+			}
+			else
+			{
+				A a;
+			}
+		}
+		
+	}
+
 }

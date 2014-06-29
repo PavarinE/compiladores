@@ -282,12 +282,10 @@ public class Parser
     		
     	case IF:
     		IfStat();
-    		match(EnumToken.DOTEND);
     		break;
     		
     	case FOR:
     		ForStat();
-    		match(EnumToken.DOTEND);
     		break;
     		
     	case BREAK:
