@@ -50,5 +50,10 @@ public enum EnumToken
     COMMA,
     ASSIGN,
     TEXT,
+    PLUS,
+    MINUS,
+    TIMES,
+    DIVIDES,
+    MOD,
     TYPE
 }

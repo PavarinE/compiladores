@@ -147,7 +147,7 @@ public class Parser
     	}
     }
     
-    private void ConstructDecList() throws Exception
+    private void ConstructDeclList() throws Exception
     {
     	while ( lToken.name == EnumToken.CONSTRUCTOR)
     	{
@@ -286,7 +286,7 @@ public class Parser
     	Expression();
     }
     
-    private void ReadtStat() throws Exception
+    private void ReadStat() throws Exception
     {
     	match(EnumToken.READ);
     	LValue();
@@ -341,8 +341,183 @@ public class Parser
     	
     private void AttribStatOpt() throws Exception
     {
-    	if( )
+    	if( lToken.name == EnumToken.ID)
+    	{
+    		LValue();
+    		match(EnumToken.ASSIGN);
+    		if( lToken.attribute == EnumToken.PLUS || lToken.attribute == EnumToken.MINUS  )
+    		{
+    			Expression();
+    		}
+    		else
+    		{
+    			AllocExpression();
+    		}
+    	}
+    	
     }
+    
+    private void ExpressionOpt()  throws Exception
+    {
+    	if( lToken.attribute == EnumToken.PLUS || lToken.attribute == EnumToken.MINUS  )
+    	{
+    		Expression();	
+    	}
+    }
+    
+    private void Expression() throws Exception
+    {
+    	NumExpression();
+    	if ( lToken.name == EnumToken.RELOP)
+    	{
+    		match(EnumToken.RELOP);
+    		NumExpression();
+    		
+    	}
+    }
+    
+    private void NumExpression() throws Exception
+    {
+    	Term();
+    	if( lToken.attribute == EnumToken.PLUS )
+    	{
+    		match(EnumToken.PLUS);
+    		Term();
+    	}
+    	else if( lToken.attribute == EnumToken.MINUS )
+    	{
+    		match(EnumToken.MINUS);
+    		Term();
+    	}
+
+    }
+    
+    private void Term() throws Exception
+    {
+    	UnaryExpression();
+    	if( lToken.attribute == EnumToken.TIMES)
+    	{
+    		match(EnumToken.TIMES);
+    		UnaryExpression();
+    	}
+    	else if( lToken.attribute == EnumToken.DIVIDES )
+    	{
+    		match(EnumToken.DIVIDES);
+    		UnaryExpression();
+    	}
+    	else if (lToken.attribute == EnumToken.MOD )
+    	{
+    		match(EnumToken.MOD);
+    		UnaryExpression();
+    	}
+    	
+    }
+    
+    private void UnaryExpression() throws Exception
+    {
+    	if(  lToken.attribute == EnumToken.PLUS )
+    	{
+    		match(EnumToken.PLUS);
+    		Factor();
+    	}
+    	else
+    	{
+    		match(EnumToken.MINUS);
+    		Factor();
+    	}
+    }
+    
+    private void Factor() throws Exception
+    {
+    	if (  lToken.name == EnumToken.INTEGER )
+    	{
+    		match(EnumToken.INTEGER);
+    	}
+    	else if (  lToken.name == EnumToken.DOUBLE )
+    	{
+    		match(EnumToken.DOUBLE);
+    	}
+    	else if (  lToken.name == EnumToken.STRING )
+    	{
+    		match(EnumToken.STRING);
+    	}
+    	else if (  lToken.name == EnumToken.ID )
+    	{
+    		LValue();
+    	}
+    	else
+    	{
+    		match(EnumToken.LPARENTHESE);
+    		Expression();
+    		match(EnumToken.RPARENTHESE);
+    	}
+    }
+    
+    private void ArgListOpt() throws Exception
+    {
+    	if ( lToken.name == EnumToken.PLUS || lToken.name == EnumToken.MINUS )
+    	{
+	    	Expression();
+	    	while ( lToken.name == EnumToken.COMMA  )
+	    	{
+	    		match(EnumToken.COMMA);
+	    		Expression();
+	    	}
+    	}
+    	
+    }
+    
+    private void LValue() throws Exception
+    {
+    	match(EnumToken.ID);
+    	if ( lToken.name == EnumToken.LBRACKET)
+    	{
+    		match(EnumToken.LBRACKET);
+    		Expression();
+    		match(EnumToken.RBRACKET);
+    	}
+    	LValueComp();
+    		
+    }
+    
+    private void LValueComp() throws Exception
+    {
+    	if ( lToken.name == EnumToken.DOT)
+    	{
+    		match(EnumToken.DOT);
+    		match(EnumToken.ID);
+    		if ( lToken.name == EnumToken.LBRACKET)
+        	{
+        		match(EnumToken.LBRACKET);
+        		Expression();
+        		match(EnumToken.RBRACKET);
+        	}
+    		LValueComp();
+    	}
+    }
+    
+    private void AllocExpression() throws Exception
+    {
+    	if( lToken.name == EnumToken.NEW )
+    	{
+    		match(EnumToken.NEW);
+    		match(EnumToken.ID);
+    		match(EnumToken.LPARENTHESE);
+    		ArgListOpt();
+    		match(EnumToken.RPARENTHESE);
+    		
+    	}
+    	else
+    	{
+    		Type();
+    		match(EnumToken.LBRACKET);
+    		Expression();
+    		match(EnumToken.RBRACKET);
+    		
+    	}
+    }
+    
+    
     
     
     
