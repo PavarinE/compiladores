@@ -102,17 +102,16 @@ public class Scanner
                             state = 30;
                         else if (inputIt.current() == '+' || inputIt.current() == '-' || inputIt.current() == '*' || inputIt.current() == '%' ) {
                         	  if (inputIt.current() == '+') {
-                                  tok.attribute = EnumToken.PLUS;
+                                  tok.name = EnumToken.PLUS;
                               } else if (inputIt.current() == '-') {
-                                  tok.attribute = EnumToken.MINUS;
+                                  tok.name = EnumToken.MINUS;
                               } else if (inputIt.current() == '*') {
-                                  tok.attribute = EnumToken.TIMES;
+                                  tok.name = EnumToken.TIMES;
                               } else if (inputIt.current() == '/') {
-                                  tok.attribute = EnumToken.DIVIDES;
+                                  tok.name = EnumToken.DIVIDES;
                               } else if (inputIt.current() == '%') {
-                                  tok.attribute = EnumToken.MOD;
+                                  tok.name = EnumToken.MOD;
                               }
-                            tok.name = EnumToken.ARITHMETIC;
                             state = -1;
                         } else if (inputIt.current() == '.') {
                             tok.name = EnumToken.DOT;
@@ -321,9 +320,8 @@ public class Scanner
                     break;
                     case 29:
                         if ((inputIt.getIndex())==inputIt.getEndIndex()) {
-                                    tok.name = EnumToken.ARITHMETIC;
                                     state = -1;
-                                    tok.attribute = EnumToken.DIVIDES;
+                                    tok.name = EnumToken.DIVIDES;
                         } else {
                             if (inputIt.current() == '/') {
                                 while (inputIt.current() != '\r' && state==29) {
@@ -361,8 +359,7 @@ public class Scanner
                                     }
                                 }
                             } else {
-                                tok.name = EnumToken.ARITHMETIC;
-                                tok.attribute = EnumToken.DIVIDES;
+                                tok.name = EnumToken.DIVIDES;
                                 state = -1;
                             }
                         }

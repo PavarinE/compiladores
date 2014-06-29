@@ -319,8 +319,29 @@ public class Parser
     				match(EnumToken.DOTEND);
     				
     			}
+    			else
+    			{
+    				Expression();
+    				match(EnumToken.RBRACKET);
+    				LValueComp();
+    				match(EnumToken.ASSIGN);
+    				if ( lToken.name == EnumToken.NEW || lToken.name == EnumToken.INTEGER || lToken.name == EnumToken.DOUBLE || lToken.name == EnumToken.STRING || lToken.name == EnumToken.ID )
+    				{
+    					AllocExpression();
+    				}
+    				else
+    				{
+    					Expression();
+    				}
+    			}
     			
     		}
+    		
+    		if( lToken.name == EnumToken.DOT)
+    		{
+    			LValueComp();
+    		}
+    		
     		
     	}
     		
@@ -406,7 +427,7 @@ public class Parser
     
     private void ExpressionOpt()  throws Exception
     {
-    	if( lToken.attribute == EnumToken.PLUS || lToken.attribute == EnumToken.MINUS  )
+    	if( lToken.name == EnumToken.PLUS || lToken.name == EnumToken.MINUS  )
     	{
     		Expression();	
     	}
@@ -426,12 +447,12 @@ public class Parser
     private void NumExpression() throws Exception
     {
     	Term();
-    	if( lToken.attribute == EnumToken.PLUS )
+    	if( lToken.name == EnumToken.PLUS )
     	{
     		match(EnumToken.PLUS);
     		Term();
     	}
-    	else if( lToken.attribute == EnumToken.MINUS )
+    	else if( lToken.name == EnumToken.MINUS )
     	{
     		match(EnumToken.MINUS);
     		Term();
@@ -442,17 +463,17 @@ public class Parser
     private void Term() throws Exception
     {
     	UnaryExpression();
-    	if( lToken.attribute == EnumToken.TIMES)
+    	if( lToken.name == EnumToken.TIMES)
     	{
     		match(EnumToken.TIMES);
     		UnaryExpression();
     	}
-    	else if( lToken.attribute == EnumToken.DIVIDES )
+    	else if( lToken.name == EnumToken.DIVIDES )
     	{
     		match(EnumToken.DIVIDES);
     		UnaryExpression();
     	}
-    	else if (lToken.attribute == EnumToken.MOD )
+    	else if (lToken.name == EnumToken.MOD )
     	{
     		match(EnumToken.MOD);
     		UnaryExpression();
@@ -462,12 +483,12 @@ public class Parser
     
     private void UnaryExpression() throws Exception
     {
-    	if(  lToken.attribute == EnumToken.PLUS )
+    	if(  lToken.name == EnumToken.PLUS )
     	{
     		match(EnumToken.PLUS);
     		Factor();
     	}
-    	else
+    	else if ( lToken.name == EnumToken.MINUS)
     	{
     		match(EnumToken.MINUS);
     		Factor();
@@ -476,23 +497,23 @@ public class Parser
     
     private void Factor() throws Exception
     {
-    	if (  lToken.name == EnumToken.INTEGER )
+    	if (  lToken.name == EnumToken.TEXT )
     	{
-    		match(EnumToken.INTEGER);
+    		match(EnumToken.TEXT);
     	}
-    	else if (  lToken.name == EnumToken.DOUBLE )
+        else if (  lToken.name == EnumToken.NUMBER )
     	{
-    		match(EnumToken.DOUBLE);
-    	}
-    	else if (  lToken.name == EnumToken.STRING )
+    		match(EnumToken.NUMBER);
+     	}
+    	/*else if (  lToken.name == EnumToken.DOUBLE_LITERAL )
     	{
     		match(EnumToken.STRING);
-    	}
+    	}*/
     	else if (  lToken.name == EnumToken.ID )
     	{
     		LValue();
     	}
-    	else
+    	else if( lToken.name == EnumToken.LPARENTHESE)
     	{
     		match(EnumToken.LPARENTHESE);
     		Expression();
