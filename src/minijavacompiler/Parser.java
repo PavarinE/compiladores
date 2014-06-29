@@ -9,7 +9,7 @@ public class Parser
 {
     private Scanner scan;
     private Token lToken;
-    private SymbolTable globalST;
+    private SymbolTable<STEntry> globalST;
     private SymbolTable currentST;
     private Token last;
     
@@ -65,6 +65,12 @@ public class Parser
     private void classDecl() throws Exception
     {
     	match(EnumToken.CLASS);
+    	SymbolTable<STEntry> st = new SymbolTable<STEntry>();
+    	STEntry entry = new STEntry( st, lToken.value);
+    	if ( globalST.add(entry))
+    	{
+    	//	System.out.println("A classe já existe");
+    	}
     	last = lToken;
     	match(EnumToken.ID);
     	if ( lToken.name == EnumToken.EXTENDS )
@@ -193,8 +199,6 @@ public class Parser
     	{
     		match(EnumToken.LBRACKET);
     		match(EnumToken.RBRACKET);
-    		STEntry entry = new STEntry(currentST, lToken, "" );
-    		currentST.add(entry);
     		MethodBody();
     	}
     	else

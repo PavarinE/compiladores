@@ -32,9 +32,10 @@ public class SymbolTable<T extends STEntry> implements Iterable<T>
     {
         //System.out.print(t.lexeme);
         
-        if (symbols.containsKey(t.lexeme))
+        if (symbols.containsKey(t.token.value))
+        
                 return false;
-        symbols.put(t.lexeme, t);
+        symbols.put(t.token.value, t);
         return true;
     }
 

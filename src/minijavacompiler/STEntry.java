@@ -21,12 +21,12 @@ public class STEntry
         //double var = 2.e+24;
     }
     
-    public STEntry(SymbolTable st, Token token, String className)
+    public STEntry(SymbolTable<STEntry> st , String className)
     {
     	this.st = st;
-    	this.token = token;
     	this.className = className;
     }
+    
     
     public STEntry(Token tok, String lex, boolean res)
     {
