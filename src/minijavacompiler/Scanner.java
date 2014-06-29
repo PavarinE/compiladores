@@ -36,10 +36,12 @@ public class Scanner
             input = new String(buffer);
             
             inputIt = new StringCharacterIterator(input);
+            System.out.println ("Começando a leitura do arquivo: " + inputFileName);
+            
         }
         catch(FileNotFoundException e)
         {
-            System.err.println("Arquivo nÃ£o encontrado");
+            System.err.println("Arquivo não encontrado");
         }
         catch(IOException e)
         {
@@ -98,7 +100,18 @@ public class Scanner
                             state = 29;
                         else if (inputIt.current() == '"')
                             state = 30;
-                        else if (inputIt.current() == '+' || inputIt.current() == '-' || inputIt.current() == '*' || inputIt.current() == '%') {
+                        else if (inputIt.current() == '+' || inputIt.current() == '-' || inputIt.current() == '*' || inputIt.current() == '%' ) {
+                        	  if (inputIt.current() == '+') {
+                                  tok.attribute = EnumToken.PLUS;
+                              } else if (inputIt.current() == '-') {
+                                  tok.attribute = EnumToken.MINUS;
+                              } else if (inputIt.current() == '*') {
+                                  tok.attribute = EnumToken.TIMES;
+                              } else if (inputIt.current() == '/') {
+                                  tok.attribute = EnumToken.DIVIDES;
+                              } else if (inputIt.current() == '%') {
+                                  tok.attribute = EnumToken.MOD;
+                              }
                             tok.name = EnumToken.ARITHMETIC;
                             state = -1;
                         } else if (inputIt.current() == '.') {
@@ -263,7 +276,7 @@ public class Scanner
                         state = -1;
                     break;
                     case 20:
-                        while (inputIt.current() == ' ' || inputIt.current() == '\r' || inputIt.current() == '\n') {
+                        while (inputIt.current() == ' ' || inputIt.current() == '\r' || inputIt.current() == '\n' || inputIt.current() == '\t') {
                             if (inputIt.getIndex()+1>= inputIt.getEndIndex()) {
                                 tok.name = EnumToken.EOF;
                                 state = -1;
@@ -310,6 +323,7 @@ public class Scanner
                         if ((inputIt.getIndex())==inputIt.getEndIndex()) {
                                     tok.name = EnumToken.ARITHMETIC;
                                     state = -1;
+                                    tok.attribute = EnumToken.DIVIDES;
                         } else {
                             if (inputIt.current() == '/') {
                                 while (inputIt.current() != '\r' && state==29) {
@@ -348,6 +362,7 @@ public class Scanner
                                 }
                             } else {
                                 tok.name = EnumToken.ARITHMETIC;
+                                tok.attribute = EnumToken.DIVIDES;
                                 state = -1;
                             }
                         }

@@ -32,7 +32,7 @@ public class Parser
         lToken = scan.nextToken();
         try
         {
-           // program(); // metodo que inicializa as verificacoes de "matches" 
+           program(); // metodo que inicializa as verificacoes de "matches" 
         }
         catch(Exception e)
         {
@@ -99,7 +99,23 @@ public class Parser
     
     private void VarDecl() throws Exception
     {
-    	match(EnumToken.TYPE);
+    	if ( lToken.name == EnumToken.INTEGER)
+    	{
+    		match(EnumToken.INTEGER); 
+    	}
+    	else if ( lToken.name == EnumToken.DOUBLE)
+    	{
+    		match(EnumToken.DOUBLE); 
+    	}
+    	else if ( lToken.name == EnumToken.STRING)
+    	{
+    		match(EnumToken.STRING); 
+    	}
+    	else if ( lToken.name == EnumToken.ID)
+    	{
+    		match(EnumToken.ID); 
+    	}
+    	
     	if ( lToken.name == EnumToken.LBRACKET) 
     	{
     		match(EnumToken.LBRACKET);
@@ -275,6 +291,9 @@ public class Parser
     		match(EnumToken.DOTEND);
     		break;
     		
+    	case ID:
+    		match(EnumToken.ID);
+    		//if ( lToken.name == )
     	}
     		
     		//verificar var declarition e attrStat
@@ -539,18 +558,20 @@ public class Parser
     
     private void match(EnumToken cTokenName) throws Exception
     {
-    	System.out.println (lToken.name + "==" + cTokenName);
+    	//System.out.println (lToken.name + "==" + cTokenName);
         if (lToken.name == cTokenName)
         {
-        	if ( cTokenName == EnumToken.ID)
+        	/*if ( cTokenName == EnumToken.ID)
         	{
         		STEntry entry = new STEntry(last, lToken.value);
         		currentST.add(entry);
-        	}
+        	}*/
+        	System.out.println ("Match: " + cTokenName);
             advance();
         }
         else if(lToken.name != cTokenName){
            // JOptionPane.showMessageDialog(null, "Erro na linha: " + lToken.line, "Mini Java Compiler - ERROR",JOptionPane.INFORMATION_MESSAGE);
+        	System.out.println ("Erro em: " + cTokenName);
             advance();
         }
             
