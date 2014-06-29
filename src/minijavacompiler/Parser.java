@@ -47,7 +47,7 @@ public class Parser
     {
         //mainClass();
 
-        while (lToken.name == EnumToken.CLASS) 
+        
             classList();
 
         match(EnumToken.EOF);
@@ -56,7 +56,10 @@ public class Parser
     
     private void classList() throws Exception
     {
-    	classDecl();
+    	while (lToken.name == EnumToken.CLASS) 
+    	{
+    		classDecl();
+    	}
     }
     
     private void classDecl() throws Exception
@@ -85,8 +88,8 @@ public class Parser
     	ConstructDeclList();
     	MethodDeclList();
     	match(EnumToken.RKEY);
-    	globalST.add(new STEntry(currentST, new Token(EnumToken.ID), lToken.value));
-    	currentST = currentST.parent;
+    	//globalST.add(new STEntry(currentST, new Token(EnumToken.ID), lToken.value));
+    	//currentST = currentST.parent;
     }
     
     private void VarDeclList() throws Exception {
@@ -340,8 +343,22 @@ public class Parser
     		if( lToken.name == EnumToken.DOT)
     		{
     			LValueComp();
+    			match(EnumToken.ASSIGN);
+    			Expression();
+    			
     		}
     		
+    		if ( lToken.name == EnumToken.ASSIGN)
+    		{
+    			match(EnumToken.ASSIGN);
+    			Expression();
+    		}
+    		
+    		if ( lToken.name == EnumToken.ID) 
+    		{
+    			match(EnumToken.ID);
+    			match(EnumToken.DOTEND);
+    		}
     		
     	}
     		
@@ -413,7 +430,7 @@ public class Parser
     	{
     		LValue();
     		match(EnumToken.ASSIGN);
-    		if( lToken.attribute == EnumToken.PLUS || lToken.attribute == EnumToken.MINUS  )
+    		if( lToken.name == EnumToken.PLUS || lToken.name == EnumToken.MINUS  )
     		{
     			Expression();
     		}
