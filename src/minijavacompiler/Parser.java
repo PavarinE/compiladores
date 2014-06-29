@@ -90,7 +90,7 @@ public class Parser
     }
     
     private void VarDeclList() throws Exception {
-        while (lToken.name == EnumToken.INTEGER || lToken.name == EnumToken.FLOAT || lToken.name ==  EnumToken.DOUBLE || lToken.name == EnumToken.ID ) 
+        while (lToken.name == EnumToken.INTEGER || lToken.name == EnumToken.STRING || lToken.name ==  EnumToken.DOUBLE || lToken.name == EnumToken.ID ) 
         {
         	last = lToken;
         	VarDecl();
@@ -99,37 +99,39 @@ public class Parser
     
     private void VarDecl() throws Exception
     {
-    	if ( lToken.name == EnumToken.INTEGER)
-    	{
-    		match(EnumToken.INTEGER); 
-    	}
-    	else if ( lToken.name == EnumToken.DOUBLE)
-    	{
-    		match(EnumToken.DOUBLE); 
-    	}
-    	else if ( lToken.name == EnumToken.STRING)
-    	{
-    		match(EnumToken.STRING); 
-    	}
-    	else if ( lToken.name == EnumToken.ID)
-    	{
-    		match(EnumToken.ID); 
-    	}
+    	Type();
     	
     	if ( lToken.name == EnumToken.LBRACKET) 
     	{
     		match(EnumToken.LBRACKET);
     		match(EnumToken.RBRACKET);
-    		STEntry entry = new STEntry(currentST, lToken, "" );
-    		currentST.add(entry);
-    		VarDeclOpt();
-    		match(EnumToken.DOTEND);
+    		match(EnumToken.ID);
+    		//STEntry entry = new STEntry(currentST, lToken, "" );
+    		//currentST.add(entry);
+    		if( lToken.name == EnumToken.LPARENTHESE)
+    		{
+    			MethodBody();
+    		}
+    		else
+    		{
+        		VarDeclOpt();
+        		match(EnumToken.DOTEND);
+    		}
+    		
+    		
     	}
     	else
     	{
     		match(EnumToken.ID);
-    		VarDeclOpt();
-    		match(EnumToken.DOTEND);
+    		if( lToken.name == EnumToken.LPARENTHESE)
+    		{
+    			MethodBody();
+    		}
+    		else
+    		{
+	    		VarDeclOpt();
+	    		match(EnumToken.DOTEND);
+    		}
     	}
     	 	
     }
@@ -183,7 +185,7 @@ public class Parser
     
     private void MethodDecl() throws Exception
     {
-    	match(EnumToken.TYPE);
+    	Type();
     	if ( lToken.name == EnumToken.LBRACKET)
     	{
     		match(EnumToken.LBRACKET);
@@ -204,9 +206,9 @@ public class Parser
     	match(EnumToken.LPARENTHESE);
     	ParamListOpt();
     	match(EnumToken.RPARENTHESE);
-    	match(EnumToken.LBRACKET);
+    	match(EnumToken.LKEY);
     	Statements();
-    	match(EnumToken.RBRACKET);
+    	match(EnumToken.RKEY);
     }
     
     private void ParamListOpt() throws Exception
@@ -216,7 +218,11 @@ public class Parser
     
     private void ParamList() throws Exception
     {
-    	while ( lToken.name == EnumToken.INTEGER || lToken.name == EnumToken.DOUBLE || lToken.name == EnumToken.STRING || lToken.name == EnumToken.ID  )
+    	if (lToken.name == EnumToken.INTEGER || lToken.name == EnumToken.DOUBLE || lToken.name == EnumToken.STRING || lToken.name == EnumToken.ID)
+    	{
+    		Param();
+    	}
+    	while ( lToken.name == EnumToken.COMMA  )
     	{
     		match(EnumToken.COMMA);
     		Param();
@@ -225,24 +231,23 @@ public class Parser
     
     private void Param() throws Exception
     {
-    	match(EnumToken.TYPE);
+    	Type();
     	if( lToken.name == EnumToken.LBRACKET)
     	{
     		match(EnumToken.LBRACKET);
     		match(EnumToken.RBRACKET);
-    		STEntry entry = new STEntry(currentST, lToken, "" );
-    		currentST.add(entry);
     	}
-    	else
-    	{
-    		STEntry entry = new STEntry(currentST, lToken, "" );
-    		currentST.add(entry);
-    	}
+
+		//STEntry entry = new STEntry(currentST, lToken, "" );
+		//currentST.add(entry);
+
+    	match(EnumToken.ID);
     }
     
     private void Statements() throws Exception
     {
-    	while ( lToken.name == EnumToken.PRINT || lToken.name == EnumToken.READ || lToken.name == EnumToken.RETURN || lToken.name == EnumToken.SUPER || lToken.name == EnumToken.IF || lToken.name == EnumToken.FOR || lToken.name == EnumToken.BREAK || lToken.name == EnumToken.DOTEND || lToken.name == EnumToken.ID )
+    	
+    	while ( lToken.name == EnumToken.PRINT || lToken.name == EnumToken.READ || lToken.name == EnumToken.RETURN || lToken.name == EnumToken.SUPER || lToken.name == EnumToken.IF || lToken.name == EnumToken.FOR || lToken.name == EnumToken.BREAK || lToken.name == EnumToken.DOTEND || lToken.name == EnumToken.ID || lToken.name == EnumToken.INTEGER || lToken.name == EnumToken.STRING || lToken.name == EnumToken.DOUBLE )
     	{
     		Statement();
     	}
@@ -291,9 +296,32 @@ public class Parser
     		match(EnumToken.DOTEND);
     		break;
     		
+    	case INTEGER:
+    		VarDeclList();
+    		break;
+    	case STRING:
+    		VarDeclList();
+    		break;
+    	case DOUBLE:
+    		VarDeclList();
+    		break;
+    		
     	case ID:
     		match(EnumToken.ID);
-    		//if ( lToken.name == )
+    		if( lToken.name == EnumToken.LBRACKET)
+    		{
+    			match(EnumToken.LBRACKET);
+    			if (lToken.name == EnumToken.RBRACKET )
+    			{
+    				match(EnumToken.RBRACKET);
+    				match(EnumToken.ID);
+    				VarDeclOpt();
+    				match(EnumToken.DOTEND);
+    				
+    			}
+    			
+    		}
+    		
     	}
     		
     		//verificar var declarition e attrStat

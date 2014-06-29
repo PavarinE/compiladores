@@ -1,9 +1,10 @@
 class a
 { 
-	int a;
-	int b;
-	int c;
+	B x;	
 	
-	metodo();
+	string metodo (C b )
+	{
+		int b;
+	} 
 	
 }
