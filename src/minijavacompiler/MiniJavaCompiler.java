@@ -7,7 +7,8 @@ public class MiniJavaCompiler
 {
     public static void main(String[] args) 
     {
-        Parser parser = new Parser("teste1.mj");
-        parser.execute();
+    	Editor ed = new Editor();
+    	ed.setSize(1024, 768);
+    	ed.setVisible(true);
     }
 }

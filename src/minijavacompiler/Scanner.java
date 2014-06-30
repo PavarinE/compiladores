@@ -21,10 +21,10 @@ public class Scanner
     public int line;
 
     
-    public Scanner(String inputFileName)
+    public Scanner(String inputString)
     {
     	this.line = 1;
-        File inputFile = new File(inputFileName);       
+      /*  File inputFile = new File(inputFileName);       
         
         try
         {
@@ -33,14 +33,14 @@ public class Scanner
             int size = (int)inputFile.length();            
             char[] buffer = new char[size];
         
-            fr.read(buffer, 0, size);
+            fr.read(buffer, 0, size);*/
             
-            input = new String(buffer);
+            input = new String(inputString);
             
             inputIt = new StringCharacterIterator(input);
-            System.out.println ("Começando a leitura do arquivo: " + inputFileName);
+            //System.out.println ("Começando a leitura do arquivo: " + inputFileName);
             
-        }
+       /* }
         catch(FileNotFoundException e)
         {
             System.err.println("Arquivo não encontrado");
@@ -48,7 +48,7 @@ public class Scanner
         catch(IOException e)
         {
             System.err.println("Erro na leitura do arquivo");
-        }
+        }*/
     }
     
     public Token nextToken()

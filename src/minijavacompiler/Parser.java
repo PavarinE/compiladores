@@ -74,7 +74,8 @@ public class Parser
     	currentST = new SymbolTable();
     	if ( !globalST.add(entry))
     	{
-    		System.out.println("Erro: Redefinição da classe " + lToken.value + " na linha " + lToken.line);//////////////////////////////////////////////////////
+    		Editor.printOutput("Erro: Redefinição da classe " + lToken.value + " na linha " + lToken.line);
+    		//System.out.println("Erro: Redefinição da classe " + lToken.value + " na linha " + lToken.line);//////////////////////////////////////////////////////
     	}
     	last = lToken;
     	match(EnumToken.ID);
@@ -118,7 +119,8 @@ public class Parser
     		STEntry ste = new STEntry(lToken, lToken.value);
     		if ( !currentST.add(ste) )
     		{
-    			System.out.println("Erro: Redefinição de: " + lToken.value.toLowerCase() + " na linha " + lToken.line);
+    			Editor.printOutput("Erro: Redefinição de: " + lToken.value.toLowerCase() + " na linha " + lToken.line);
+    			//System.out.println("Erro: Redefinição de: " + lToken.value.toLowerCase() + " na linha " + lToken.line);
     		}
     		match(EnumToken.ID);
 
@@ -140,7 +142,8 @@ public class Parser
     		STEntry ste = new STEntry(lToken, lToken.value);
     		if ( !currentST.add(ste) )
     		{
-    			System.out.println("Erro: Redefinição de: " + lToken.value.toLowerCase() + " na linha " + lToken.line);
+    			Editor.printOutput("Erro: Redefinição de: " + lToken.value.toLowerCase() + " na linha " + lToken.line);
+    			//System.out.println("Erro: Redefinição de: " + lToken.value.toLowerCase() + " na linha " + lToken.line);
     		}
     		match(EnumToken.ID);
     		if( lToken.name == EnumToken.LPARENTHESE)
@@ -165,7 +168,8 @@ public class Parser
 	    	STEntry ste = new STEntry(lToken, lToken.value);
     		if ( !currentST.add(ste) )
     		{
-    			System.out.println("Erro: Redefinição de: " + lToken.value + " na linha " + lToken.line);
+    			Editor.printOutput("Erro: Redefinição de: " + lToken.value + " na linha " + lToken.line);
+    			//System.out.println("Erro: Redefinição de: " + lToken.value + " na linha " + lToken.line);
     		}
 	    	match(EnumToken.ID);
     	}
@@ -272,7 +276,8 @@ public class Parser
     	STEntry ste = new STEntry(lToken, lToken.value);
 		if ( !currentST.add(ste) )
 		{
-			System.out.println("Erro: Redefinição do parametro " + lToken.value.toLowerCase() + " na linha " + lToken.line);
+			Editor.printOutput("Erro: Redefinição do parametro " + lToken.value.toLowerCase() + " na linha " + lToken.line);
+		//	System.out.println("Erro: Redefinição do parametro " + lToken.value.toLowerCase() + " na linha " + lToken.line);
 		}  
     	match(EnumToken.ID);
     }
@@ -356,7 +361,8 @@ public class Parser
     			{
     				if ( !currentST.symbols.containsKey(temp))
     				{
-    					System.out.println("A variavel: " + temp.toLowerCase() + " não existe no escopo atual");
+    					Editor.printOutput("A variavel: " + temp.toLowerCase() + " não existe no escopo atual");
+    					//System.out.println("A variavel: " + temp.toLowerCase() + " não existe no escopo atual");
     				}
     				Expression();
     				match(EnumToken.RBRACKET);
@@ -386,7 +392,8 @@ public class Parser
     		{
     			if ( !currentST.symbols.containsKey(temp))
     			{
-    				System.out.println("A variavel: " + temp.toLowerCase() + " não existe no escopo atual");
+    				Editor.printOutput("A variavel: " + temp.toLowerCase() + " não existe no escopo atual");
+    				//System.out.println("A variavel: " + temp.toLowerCase() + " não existe no escopo atual");
     			}
     			match(EnumToken.ASSIGN);
     			Expression();
@@ -568,7 +575,8 @@ public class Parser
     	{
     		if (!currentST.symbols.containsKey(lToken.value))
     		{
-    			System.out.println("A variavel " + lToken.value.toLowerCase() + " não foi declarada no escopo atual");
+    			Editor.printOutput("A variavel " + lToken.value.toLowerCase() + " não foi declarada no escopo atual");
+    			//System.out.println("A variavel " + lToken.value.toLowerCase() + " não foi declarada no escopo atual");
     		}
     		LValue();
     	}
@@ -674,12 +682,14 @@ public class Parser
         		STEntry entry = new STEntry(last, lToken.value);
         		currentST.add(entry);
         	}*/
-        	System.out.println ("Linha "+lToken.line+" Match: " + cTokenName);
+        	//System.out.println ("Linha "+lToken.line+" Match: " + cTokenName);
+        	Editor.printOutput("Linha "+lToken.line+" Match: " + cTokenName);
             advance();
         }
         else if(lToken.name != cTokenName){
            // JOptionPane.showMessageDialog(null, "Erro na linha: " + lToken.line, "Mini Java Compiler - ERROR",JOptionPane.INFORMATION_MESSAGE);
-        	System.out.println ("Linha "+ lToken.line+" Esperado: " + cTokenName + " Encontrado: " + lToken.name);
+        	//System.out.println ("Linha "+ lToken.line+" Esperado: " + cTokenName + " Encontrado: " + lToken.name);
+        	Editor.printOutput("Linha "+ lToken.line+" Esperado: " + cTokenName + " Encontrado: " + lToken.name);
             advance();
         }
             
