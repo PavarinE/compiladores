@@ -8,6 +8,7 @@ public class Token
     public EnumToken name;
     public EnumToken attribute;
     public SymbolTable tsPtr;
+    public int type;
     public String value;
     public int line; 
     

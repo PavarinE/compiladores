@@ -14,6 +14,7 @@ public class Parser
     private SymbolTable<STEntry> globalST;
     private SymbolTable currentST;
     private Token last;
+    private int lastType;
     
     public Parser(String inputFile)    
     {
@@ -69,9 +70,8 @@ public class Parser
     {
     	match(EnumToken.CLASS);
     	STEntry entry = new STEntry(lToken, " "); 
-    	SymbolTable<STEntry> st = new SymbolTable<STEntry>(); // cria uma nova tabela de símbolos
-    	st.parent = currentST; // seta o pai da nova tabela como sendo a tabela atual
-    	entry.st = st; // atribuo a nova tabela criada para uma entrada que sera colocada na tabela global
+    	entry.className = lToken.value;
+    	currentST = new SymbolTable();
     	if ( !globalST.add(entry))
     	{
     		System.out.println("Erro: Redefinição da classe " + lToken.value + " na linha " + lToken.line);//////////////////////////////////////////////////////
@@ -92,9 +92,6 @@ public class Parser
     private void classBody() throws Exception
     {
     	match(EnumToken.LKEY);
-    	SymbolTable temp = new SymbolTable();
-    	temp.parent = currentST;
-    	currentST = temp;
     	VarDeclList();
     	ConstructDeclList();
     	MethodDeclList();
@@ -117,9 +114,14 @@ public class Parser
     	{
     		match(EnumToken.LBRACKET);
     		match(EnumToken.RBRACKET);
+    		lToken.type = this.lastType;
+    		STEntry ste = new STEntry(lToken, lToken.value);
+    		if ( !currentST.add(ste) )
+    		{
+    			System.out.println("Erro: Redefinição de: " + lToken.value.toLowerCase() + " na linha " + lToken.line);
+    		}
     		match(EnumToken.ID);
-    		//STEntry entry = new STEntry(currentST, lToken, "" );
-    		//currentST.add(entry);
+
     		if( lToken.name == EnumToken.LPARENTHESE)
     		{
     			MethodBody();
@@ -134,6 +136,12 @@ public class Parser
     	}
     	else
     	{
+    		lToken.type = this.lastType;
+    		STEntry ste = new STEntry(lToken, lToken.value);
+    		if ( !currentST.add(ste) )
+    		{
+    			System.out.println("Erro: Redefinição de: " + lToken.value.toLowerCase() + " na linha " + lToken.line);
+    		}
     		match(EnumToken.ID);
     		if( lToken.name == EnumToken.LPARENTHESE)
     		{
@@ -152,7 +160,13 @@ public class Parser
     {
     	while ( lToken.name == EnumToken.COMMA)
     	{
+    		lToken.type = this.lastType;
 	    	match(EnumToken.COMMA);
+	    	STEntry ste = new STEntry(lToken, lToken.value);
+    		if ( !currentST.add(ste) )
+    		{
+    			System.out.println("Erro: Redefinição de: " + lToken.value + " na linha " + lToken.line);
+    		}
 	    	match(EnumToken.ID);
     	}
     	
@@ -166,12 +180,15 @@ public class Parser
     		match(EnumToken.ID);
     		break;
     	case INTEGER:
+    		this.lastType = 1;
     		match(EnumToken.INTEGER);
     		break;
     	case DOUBLE:
+    		this.lastType = 2;
     		match(EnumToken.DOUBLE);
     		break;
     	case STRING:
+    		this.lastType = 3;
     		match(EnumToken.STRING);
     		break;
     	}
@@ -219,6 +236,7 @@ public class Parser
     	match(EnumToken.LKEY);
     	Statements();
     	match(EnumToken.RKEY);
+    	currentST = currentST.parent;
     }
     
     private void ParamListOpt() throws Exception
@@ -228,6 +246,9 @@ public class Parser
     
     private void ParamList() throws Exception
     {
+    	SymbolTable st = new SymbolTable();
+    	st.parent = currentST;
+    	currentST = st;
     	if (lToken.name == EnumToken.INTEGER || lToken.name == EnumToken.DOUBLE || lToken.name == EnumToken.STRING || lToken.name == EnumToken.ID)
     	{
     		Param();
@@ -247,10 +268,12 @@ public class Parser
     		match(EnumToken.LBRACKET);
     		match(EnumToken.RBRACKET);
     	}
-
-		//STEntry entry = new STEntry(currentST, lToken, "" );
-		//currentST.add(entry);
-
+    	lToken.type = this.lastType;
+    	STEntry ste = new STEntry(lToken, lToken.value);
+		if ( !currentST.add(ste) )
+		{
+			System.out.println("Erro: Redefinição do parametro " + lToken.value.toLowerCase() + " na linha " + lToken.line);
+		}  
     	match(EnumToken.ID);
     }
     
@@ -265,6 +288,7 @@ public class Parser
     
     private void Statement() throws Exception
     {
+
     	switch ( lToken.name )
     	{
     	case PRINT:
@@ -315,6 +339,7 @@ public class Parser
     		break;
     		
     	case ID:
+    		String temp = new String(lToken.value);
     		match(EnumToken.ID);
     		if( lToken.name == EnumToken.LBRACKET)
     		{
@@ -329,6 +354,10 @@ public class Parser
     			}
     			else
     			{
+    				if ( !currentST.symbols.containsKey(temp))
+    				{
+    					System.out.println("A variavel: " + temp.toLowerCase() + " não existe no escopo atual");
+    				}
     				Expression();
     				match(EnumToken.RBRACKET);
     				LValueComp();
@@ -355,6 +384,10 @@ public class Parser
     		
     		if ( lToken.name == EnumToken.ASSIGN)
     		{
+    			if ( !currentST.symbols.containsKey(temp))
+    			{
+    				System.out.println("A variavel: " + temp.toLowerCase() + " não existe no escopo atual");
+    			}
     			match(EnumToken.ASSIGN);
     			Expression();
     		}
@@ -533,6 +566,10 @@ public class Parser
     	}*/
     	else if (  lToken.name == EnumToken.ID )
     	{
+    		if (!currentST.symbols.containsKey(lToken.value))
+    		{
+    			System.out.println("A variavel " + lToken.value.toLowerCase() + " não foi declarada no escopo atual");
+    		}
     		LValue();
     	}
     	else if( lToken.name == EnumToken.LPARENTHESE)
@@ -642,7 +679,7 @@ public class Parser
         }
         else if(lToken.name != cTokenName){
            // JOptionPane.showMessageDialog(null, "Erro na linha: " + lToken.line, "Mini Java Compiler - ERROR",JOptionPane.INFORMATION_MESSAGE);
-        	System.out.println ("Linha "+lToken.line+"Erro em: " + cTokenName);
+        	System.out.println ("Linha "+ lToken.line+" Esperado: " + cTokenName + " Encontrado: " + lToken.name);
             advance();
         }
             
