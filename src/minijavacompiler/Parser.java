@@ -2,6 +2,8 @@ package minijavacompiler;
 
 import java.util.concurrent.ExecutionException;
 
+import javax.swing.event.TreeSelectionEvent;
+
 /**
  * @author Lucas Tomaz Heck
  */
@@ -16,9 +18,10 @@ public class Parser
     public Parser(String inputFile)    
     {
         //Instancia o analisador lÃ©xico
+    	
         scan = new Scanner(inputFile);
         
-        globalST = new SymbolTable<STEntry>();
+        globalST = new SymbolTable();
         currentST = globalST;
     }
     
@@ -65,11 +68,13 @@ public class Parser
     private void classDecl() throws Exception
     {
     	match(EnumToken.CLASS);
-    	SymbolTable<STEntry> st = new SymbolTable<STEntry>();
-    	STEntry entry = new STEntry( st, lToken.value);
-    	if ( globalST.add(entry))
+    	STEntry entry = new STEntry(lToken, " "); 
+    	SymbolTable<STEntry> st = new SymbolTable<STEntry>(); // cria uma nova tabela de símbolos
+    	st.parent = currentST; // seta o pai da nova tabela como sendo a tabela atual
+    	entry.st = st; // atribuo a nova tabela criada para uma entrada que sera colocada na tabela global
+    	if ( !globalST.add(entry))
     	{
-    	//	System.out.println("A classe já existe");
+    		System.out.println("Erro: Redefinição da classe " + lToken.value + " na linha " + lToken.line);//////////////////////////////////////////////////////
     	}
     	last = lToken;
     	match(EnumToken.ID);
@@ -94,8 +99,6 @@ public class Parser
     	ConstructDeclList();
     	MethodDeclList();
     	match(EnumToken.RKEY);
-    	//globalST.add(new STEntry(currentST, new Token(EnumToken.ID), lToken.value));
-    	//currentST = currentST.parent;
     }
     
     private void VarDeclList() throws Exception {
@@ -634,12 +637,12 @@ public class Parser
         		STEntry entry = new STEntry(last, lToken.value);
         		currentST.add(entry);
         	}*/
-        	System.out.println ("Match: " + cTokenName);
+        	System.out.println ("Linha "+lToken.line+" Match: " + cTokenName);
             advance();
         }
         else if(lToken.name != cTokenName){
            // JOptionPane.showMessageDialog(null, "Erro na linha: " + lToken.line, "Mini Java Compiler - ERROR",JOptionPane.INFORMATION_MESSAGE);
-        	System.out.println ("Erro em: " + cTokenName);
+        	System.out.println ("Linha "+lToken.line+"Erro em: " + cTokenName);
             advance();
         }
             

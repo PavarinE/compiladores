@@ -15,7 +15,7 @@ class b
 	}
 }
 
-class c
+class b
 {
 
 	int x, y, z;

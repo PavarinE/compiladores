@@ -18,10 +18,12 @@ public class Scanner
 {
     private static String input;
     private StringCharacterIterator inputIt;
+    public int line;
 
     
     public Scanner(String inputFileName)
     {
+    	this.line = 1;
         File inputFile = new File(inputFileName);       
         
         try
@@ -121,7 +123,7 @@ public class Scanner
                             state = -1;
                         } else if (inputIt.current() == '!') {
                             if (inputIt.getIndex()+1>= inputIt.getEndIndex()) {
-                                System.err.print("Token nÃ£o identificado!");
+                                System.err.print("Token não identificado na linha " + this.line);
                                 state = -1;
                             } else {
                                 inputIt.next();
@@ -130,7 +132,7 @@ public class Scanner
                                     tok.attribute = EnumToken.NE;
                                     state = -1;
                                 } else {
-                                    System.err.print("Token nÃ£o identificado!");
+                                    System.err.print("Token não identificado na linha " + this.line);
                                     state = -1;
                                 }
                             }
@@ -138,7 +140,7 @@ public class Scanner
                             tok.name = EnumToken.EOF;
                             state = -1;
                         } else
-                            System.err.print("Token nÃ£o identificado");
+                            System.err.print("Token não identificado na linha " + this.line);
                         inputIt.next();
                     break;
                     case 1:
@@ -276,6 +278,9 @@ public class Scanner
                     break;
                     case 20:
                         while (inputIt.current() == ' ' || inputIt.current() == '\r' || inputIt.current() == '\n' || inputIt.current() == '\t') {
+                        	  if (inputIt.current() == '\n') {
+                                  this.line++;
+                              }
                             if (inputIt.getIndex()+1>= inputIt.getEndIndex()) {
                                 tok.name = EnumToken.EOF;
                                 state = -1;
@@ -619,6 +624,7 @@ public class Scanner
                 */}// Fim switch
             }// Fim while
         }// Fim else
+        tok.line = this.line;
         return tok;
     }
 }

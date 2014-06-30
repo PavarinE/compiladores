@@ -9,12 +9,14 @@ public class Token
     public EnumToken attribute;
     public SymbolTable tsPtr;
     public String value;
+    public int line; 
     
     public Token(EnumToken name)
     {
         this.name = name;
         attribute = EnumToken.UNDEF;
         tsPtr = null;
+        this.line = 0;
     }
     
     public Token ( EnumToken name, EnumToken attr,  SymbolTable ts)
